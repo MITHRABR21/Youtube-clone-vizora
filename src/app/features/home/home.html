@@ -1,0 +1,585 @@
+<section class="feed-container">
+
+  <!-- CATEGORY BAR -->
+
+  <div class="category-bar">
+
+```
+@for (cat of videoService.categories(); track cat) {
+
+  <button
+    type="button"
+    class="chip"
+    [class.active]="videoService.selectedCategory() === cat"
+    (click)="selectCategory(cat)"
+  >
+    {{ cat }}
+  </button>
+
+}
+```
+
+  </div>
+
+  <!-- SEARCH / CATEGORY RESULTS -->
+
+@if (videoService.isSearching()) {
+
+```
+<div class="search-feed-wrapper">
+
+  <!-- LOADING -->
+
+  @if (videoService.isLoading()) {
+
+    <div class="feed-status-box">
+
+      <p>
+        Searching YouTube for
+        "{{ videoService.searchQuery() }}"...
+      </p>
+
+    </div>
+
+  }
+
+
+  <!-- RESULTS AVAILABLE -->
+
+  @else if (videoService.searchResults().length > 0) {
+
+    <!-- FIRST THREE SEARCH RESULTS -->
+
+    @for (
+      video of videoService.searchResults().slice(0, 3);
+      track video.youtubeId
+    ) {
+
+      <article
+        class="yt-search-card"
+        (click)="openVideo(video.id)"
+      >
+
+        <div class="yt-search-thumb">
+
+          <img
+            [src]="video.thumbnailUrl"
+            [alt]="video.title"
+            loading="lazy"
+          />
+
+          <span class="yt-badge">
+            {{ video.duration }}
+          </span>
+
+        </div>
+
+
+        <div class="yt-search-info">
+
+          <h2
+            class="yt-video-title"
+            [title]="video.title"
+          >
+            {{ video.title }}
+          </h2>
+
+
+          <p class="yt-video-stats">
+            {{ video.views }}
+            •
+            {{ video.uploadedAt }}
+          </p>
+
+
+          <div class="yt-channel-badge">
+
+            <img
+              [src]="video.channelAvatar"
+              [alt]="video.channelName"
+              class="yt-avatar"
+            />
+
+            <span class="yt-channel-name">
+              {{ video.channelName }}
+            </span>
+
+            <span class="yt-check">
+              ✓
+            </span>
+
+          </div>
+
+
+          @if (video.description) {
+
+            <p class="yt-video-desc">
+              {{ video.description }}
+            </p>
+
+          }
+
+        </div>
+
+      </article>
+
+    }
+
+
+    <!-- SEARCH SHORTS SHELF -->
+
+    <div class="search-shorts-shelf">
+
+      <div class="shorts-shelf-title">
+
+        <svg
+          class="shorts-icon"
+          viewBox="0 0 24 24"
+        >
+
+          <path
+            fill="#ff0000"
+            d="M17.77 10.32l-1.2-1.2-1.42 1.41 1.2 1.2c.46.47.75 1.1.75 1.77 0 .68-.29 1.3-.75 1.77l-1.2 1.2 1.42 1.41 1.2-1.2C18.66 14.77 19.2 13.43 19.2 12s-.54-2.77-1.43-3.68zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4h12v12z"
+          />
+
+        </svg>
+
+        <span>Shorts</span>
+
+      </div>
+
+
+      <div class="search-shorts-carousel">
+
+        @for (
+          short of videoService.shorts();
+          track short.youtubeId
+        ) {
+
+          <div
+            class="search-short-item"
+            (click)="openShort(short.id)"
+          >
+
+            <div class="search-short-thumb">
+
+              <img
+                [src]="short.thumbnailUrl"
+                [alt]="short.title"
+                loading="lazy"
+              />
+
+              <span class="short-views">
+                {{ short.views }}
+              </span>
+
+            </div>
+
+
+            <h4 class="search-short-text">
+              {{ short.title }}
+            </h4>
+
+          </div>
+
+        }
+
+      </div>
+
+    </div>
+
+
+    <!-- REMAINING SEARCH RESULTS -->
+
+    @for (
+      video of videoService.searchResults().slice(3);
+      track video.youtubeId
+    ) {
+
+      <article
+        class="yt-search-card"
+        (click)="openVideo(video.id)"
+      >
+
+        <div class="yt-search-thumb">
+
+          <img
+            [src]="video.thumbnailUrl"
+            [alt]="video.title"
+            loading="lazy"
+          />
+
+          <span class="yt-badge">
+            {{ video.duration }}
+          </span>
+
+        </div>
+
+
+        <div class="yt-search-info">
+
+          <h2
+            class="yt-video-title"
+            [title]="video.title"
+          >
+            {{ video.title }}
+          </h2>
+
+
+          <p class="yt-video-stats">
+            {{ video.views }}
+            •
+            {{ video.uploadedAt }}
+          </p>
+
+
+          <div class="yt-channel-badge">
+
+            <img
+              [src]="video.channelAvatar"
+              [alt]="video.channelName"
+              class="yt-avatar"
+            />
+
+            <span class="yt-channel-name">
+              {{ video.channelName }}
+            </span>
+
+            <span class="yt-check">
+              ✓
+            </span>
+
+          </div>
+
+
+          @if (video.description) {
+
+            <p class="yt-video-desc">
+              {{ video.description }}
+            </p>
+
+          }
+
+        </div>
+
+      </article>
+
+    }
+
+
+    <!-- LOAD MORE -->
+
+    @if (videoService.searchResults().length >= 20) {
+
+      <div class="load-more-container">
+
+        <button
+          type="button"
+          class="load-more-button"
+          (click)="loadMore()"
+          [disabled]="videoService.isLoading()"
+        >
+
+          @if (videoService.isLoading()) {
+            Loading...
+          } @else {
+            Load more
+          }
+
+        </button>
+
+      </div>
+
+    }
+
+  }
+
+
+  <!-- NO RESULTS -->
+
+  @else {
+
+    <div class="feed-status-box no-results">
+
+      <div class="no-results-icon">
+        🔍
+      </div>
+
+      <h2>
+        No videos found
+      </h2>
+
+      <p>
+        We couldn't find videos for
+        "{{ videoService.searchQuery() }}".
+      </p>
+
+      <p>
+        Try another search.
+      </p>
+
+    </div>
+
+  }
+
+</div>
+```
+
+}
+
+  <!-- NORMAL HOME FEED -->
+
+@else {
+
+```
+<div class="video-grid">
+
+  @for (
+    video of videoService.homeVideos().slice(0, 4);
+    track video.youtubeId;
+    let first = $first
+  ) {
+
+    <article
+      class="video-card"
+      (click)="openVideo(video.id)"
+    >
+
+      <div class="thumbnail-wrapper">
+
+        <img
+          [src]="video.thumbnailUrl"
+          [alt]="video.title"
+          class="thumbnail"
+          [attr.loading]="first ? 'eager' : 'lazy'"
+        />
+
+        <span class="duration">
+          {{ video.duration }}
+        </span>
+
+      </div>
+
+
+      <div class="video-info">
+
+        <img
+          [src]="video.channelAvatar"
+          [alt]="video.channelName"
+          class="channel-avatar"
+        />
+
+
+        <div class="meta">
+
+          <h2
+            class="title"
+            [title]="video.title"
+          >
+            {{ video.title }}
+          </h2>
+
+
+          <div class="channel-meta">
+
+            <span class="channel-name">
+              {{ video.channelName }}
+            </span>
+
+            <span class="badge">
+              ✓
+            </span>
+
+          </div>
+
+
+          <p class="stats">
+
+            <span>
+              {{ video.views }}
+            </span>
+
+            <span class="dot">
+              •
+            </span>
+
+            <span>
+              {{ video.uploadedAt }}
+            </span>
+
+          </p>
+
+        </div>
+
+      </div>
+
+    </article>
+
+  }
+
+</div>
+
+
+<!-- HOME SHORTS -->
+
+<div class="shorts-shelf-container">
+
+  <div class="shorts-header">
+
+    <div class="shorts-title">
+
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        class="shorts-icon"
+      >
+
+        <path
+          fill="#ff0000"
+          d="M17.77 10.32l-1.2-1.2-1.42 1.41 1.2 1.2c.46.47.75 1.1.75 1.77.0 .68-.29 1.3-.75 1.77l-1.2 1.2 1.42 1.41 1.2-1.2C18.66 14.77 19.2 13.43 19.2 12s-.54-2.77-1.43-3.68zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4h12v12z"
+        />
+
+      </svg>
+
+      <h2>
+        Shorts
+      </h2>
+
+    </div>
+
+  </div>
+
+
+  <div class="shorts-grid">
+
+    @for (
+      item of videoService.shorts();
+      track item.youtubeId
+    ) {
+
+      <div
+        class="short-card"
+        (click)="openShort(item.id)"
+      >
+
+        <div class="short-thumbnail">
+
+          <img
+            [src]="item.thumbnailUrl"
+            [alt]="item.title"
+            loading="lazy"
+          />
+
+          <div class="views-overlay">
+            {{ item.views }}
+          </div>
+
+        </div>
+
+
+        <h3 class="short-caption">
+          {{ item.title }}
+        </h3>
+
+      </div>
+
+    }
+
+  </div>
+
+</div>
+
+
+<!-- REMAINING HOME VIDEOS -->
+
+<div class="video-grid">
+
+  @for (
+    video of videoService.homeVideos().slice(4);
+    track video.youtubeId
+  ) {
+
+    <article
+      class="video-card"
+      (click)="openVideo(video.id)"
+    >
+
+      <div class="thumbnail-wrapper">
+
+        <img
+          [src]="video.thumbnailUrl"
+          [alt]="video.title"
+          class="thumbnail"
+          loading="lazy"
+        />
+
+        <span class="duration">
+          {{ video.duration }}
+        </span>
+
+      </div>
+
+
+      <div class="video-info">
+
+        <img
+          [src]="video.channelAvatar"
+          [alt]="video.channelName"
+          class="channel-avatar"
+        />
+
+
+        <div class="meta">
+
+          <h2
+            class="title"
+            [title]="video.title"
+          >
+            {{ video.title }}
+          </h2>
+
+
+          <div class="channel-meta">
+
+            <span class="channel-name">
+              {{ video.channelName }}
+            </span>
+
+            <span class="badge">
+              ✓
+            </span>
+
+          </div>
+
+
+          <p class="stats">
+
+            <span>
+              {{ video.views }}
+            </span>
+
+            <span class="dot">
+              •
+            </span>
+
+            <span>
+              {{ video.uploadedAt }}
+            </span>
+
+          </p>
+
+        </div>
+
+      </div>
+
+    </article>
+
+  }
+
+</div>
+```
+
+}
+
+</section>

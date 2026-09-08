@@ -1,0 +1,124 @@
+.shorts-page-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - var(--nav-height) - 48px);
+}
+
+.vertical-player-column {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  max-width: 540px;
+  width: 100%;
+
+  .vertical-screen {
+    position: relative;
+    width: 380px;
+    height: 675px;
+    border-radius: 16px;
+    overflow: hidden;
+    background-color: #000;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+
+    .shorts-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .overlay-info {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      right: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      color: #fff;
+      pointer-events: none;
+
+      .channel-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        pointer-events: auto;
+
+        .avatar {
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+        }
+
+        .channel-name {
+          font-weight: 600;
+          font-size: 14px;
+        }
+
+        .sub-btn {
+          background-color: #fff;
+          color: #0f0f0f;
+          border: none;
+          padding: 6px 12px;
+          border-radius: 16px;
+          font-weight: 600;
+          font-size: 12px;
+          cursor: pointer;
+        }
+      }
+
+      .caption {
+        font-size: 14px;
+        line-height: 1.4;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+      }
+    }
+  }
+
+  .action-strip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 24px;
+
+    .action-circle {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background-color: #272727;
+      border: none;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+
+      &:hover {
+        background-color: #3f3f3f;
+      }
+
+      &.active {
+        color: #3ea6ff;
+      }
+
+      &.next-btn {
+        margin-top: 12px;
+        background-color: #383838;
+      }
+
+      .strip-icon {
+        width: 22px;
+        height: 22px;
+      }
+    }
+
+    .count {
+      font-size: 12px;
+      font-weight: 500;
+      color: #f1f1f1;
+      margin-bottom: 6px;
+    }
+  }
+}

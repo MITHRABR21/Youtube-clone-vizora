@@ -1,0 +1,8 @@
+<app-navbar />
+
+<div class="layout-body">
+  <app-sidebar />
+  <main class="page-container" [class.collapsed-sidebar]="!uiService.isSidebarOpen()">
+    <router-outlet />
+  </main>
+</div>

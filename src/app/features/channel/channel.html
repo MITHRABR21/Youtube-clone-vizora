@@ -1,0 +1,96 @@
+@if (channel(); as ch) {
+  <div class="channel-page">
+    <!-- Channel Banner -->
+    <div class="channel-banner">
+      <img [src]="ch.bannerUrl" alt="Channel Banner" />
+    </div>
+
+    <!-- Header / Avatar / Subscribe Row -->
+    <div class="channel-header">
+      <div class="header-main">
+        <img [src]="ch.avatar" [alt]="ch.name" class="channel-avatar-lg" />
+        <div class="channel-meta-details">
+          <div class="title-row">
+            <h1 class="channel-name">{{ ch.name }}</h1>
+            <span class="badge-verified" title="Verified">✓</span>
+          </div>
+          <p class="channel-stats-sub">
+            <span>{{ ch.handle }}</span>
+            <span class="dot">•</span>
+            <span>{{ ch.subscribers }}</span>
+            <span class="dot">•</span>
+            <span>{{ ch.videoCount }} videos</span>
+          </p>
+          <p class="channel-tagline">{{ ch.description }}</p>
+          <div class="action-btn-row">
+            <button 
+              class="sub-btn" 
+              [class.subscribed]="store.isSubscribed(ch.name)" 
+              (click)="toggleSubscribe()">
+              {{ store.isSubscribed(ch.name) ? 'Subscribed' : 'Subscribe' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs Navigation -->
+    <nav class="channel-tabs">
+      <button class="tab-btn" [class.active]="activeTab() === 'videos'" (click)="activeTab.set('videos')">Videos</button>
+      <button class="tab-btn" [class.active]="activeTab() === 'shorts'" (click)="activeTab.set('shorts')">Shorts</button>
+      <button class="tab-btn" [class.active]="activeTab() === 'about'" (click)="activeTab.set('about')">About</button>
+    </nav>
+
+    <!-- Tab 1: Videos Grid -->
+    @if (activeTab() === 'videos') {
+      <div class="tab-content video-grid">
+        @for (video of channelVideos(); track video.id) {
+          <article class="video-card" (click)="openVideo(video.id)">
+            <div class="thumbnail-wrapper">
+              <img [src]="video.thumbnailUrl" [alt]="video.title" class="thumbnail" loading="lazy" />
+              <span class="duration">{{ video.duration }}</span>
+            </div>
+            <div class="video-info">
+              <h3 class="title">{{ video.title }}</h3>
+              <p class="stats">{{ video.views }} • {{ video.uploadedAt }}</p>
+            </div>
+          </article>
+        }
+      </div>
+    }
+
+    <!-- Tab 2: Shorts Shelf -->
+    @if (activeTab() === 'shorts') {
+      <div class="tab-content shorts-grid">
+        @for (short of channelShorts(); track short.id) {
+          <article class="short-card" (click)="openShort(short.id)">
+            <div class="short-thumb">
+              <img [src]="short.thumbnailUrl" [alt]="short.title" loading="lazy" />
+              <span class="view-pill">{{ short.views }}</span>
+            </div>
+            <h4 class="short-caption">{{ short.title }}</h4>
+          </article>
+        }
+      </div>
+    }
+
+    <!-- Tab 3: About Details -->
+    @if (activeTab() === 'about') {
+      <div class="tab-content about-container">
+        <div class="about-column">
+          <h3>Description</h3>
+          <p class="about-text">{{ ch.description }}</p>
+        </div>
+        <div class="about-stats-card">
+          <h4>Stats</h4>
+          <hr />
+          <p>{{ ch.joinedDate }}</p>
+          <hr />
+          <p>{{ ch.subscribers }}</p>
+          <hr />
+          <p>{{ ch.videoCount }} total uploads</p>
+        </div>
+      </div>
+    }
+  </div>
+}

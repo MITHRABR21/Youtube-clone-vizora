@@ -1,0 +1,55 @@
+@if (currentShort(); as item) {
+  <div class="shorts-page-wrapper">
+    <div class="vertical-player-column">
+      <div class="vertical-screen">
+        @if (safeEmbedUrl()) {
+          <iframe 
+            [src]="safeEmbedUrl()" 
+            [title]="item.title"
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen 
+            class="shorts-iframe">
+          </iframe>
+        }
+
+        <!-- Shorts Overlay Metadata -->
+        <div class="overlay-info">
+          <div class="channel-row">
+            <img [src]="item.channelAvatar" [alt]="item.channelName" class="avatar" />
+            <span class="channel-name">&#64;{{ item.channelName }}</span>
+            <button class="sub-btn">Subscribe</button>
+          </div>
+          <p class="caption">{{ item.title }}</p>
+        </div>
+      </div>
+
+      <!-- Right Floating Action Strip -->
+      <div class="action-strip">
+        <button class="action-circle" [class.active]="isLiked()" (click)="toggleLike()">
+          <svg viewBox="0 0 24 24" class="strip-icon"><path fill="currentColor" d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
+        </button>
+        <span class="count">{{ item.likes }}</span>
+
+        <button class="action-circle">
+          <svg viewBox="0 0 24 24" class="strip-icon"><path fill="currentColor" d="M15 3H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z"/></svg>
+        </button>
+        <span class="count">Dislike</span>
+
+        <button class="action-circle">
+          <svg viewBox="0 0 24 24" class="strip-icon"><path fill="currentColor" d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+        </button>
+        <span class="count">{{ item.commentsCount }}</span>
+
+        <button class="action-circle">
+          <svg viewBox="0 0 24 24" class="strip-icon"><path fill="currentColor" d="M14 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg>
+        </button>
+        <span class="count">Share</span>
+
+        <button class="action-circle next-btn" (click)="nextShort()" title="Next Short">
+          <svg viewBox="0 0 24 24" class="strip-icon"><path fill="currentColor" d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+}

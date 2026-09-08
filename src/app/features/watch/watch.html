@@ -1,0 +1,150 @@
+@if (currentVideo(); as video) {
+  <div class="watch-container">
+    <div class="primary-content">
+      <!-- High Fidelity Embed Player -->
+      <div class="player-wrapper">
+        @if (safeEmbedUrl()) {
+          <iframe 
+            [src]="safeEmbedUrl()" 
+            [title]="video.title"
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen 
+            class="embedded-player">
+          </iframe>
+        }
+      </div>
+
+      <!-- Video Title -->
+      <h1 class="video-headline">{{ video.title }}</h1>
+
+      <!-- Toolbar Row -->
+      <div class="video-toolbar">
+        <div class="creator-details">
+          <img [src]="video.channelAvatar" [alt]="video.channelName" class="avatar" />
+          <div class="creator-names">
+            <div class="channel-title-wrapper">
+              <span class="channel-title">{{ video.channelName }}</span>
+              <span class="verified-badge" title="Verified">✓</span>
+            </div>
+            <span class="sub-count">{{ video.subscribers || 'Official Channel' }}</span>
+          </div>
+          <button 
+            class="subscribe-btn" 
+            [class.subscribed]="isSubscribed()" 
+            (click)="toggleSubscribe()">
+            {{ isSubscribed() ? 'Subscribed' : 'Subscribe' }}
+          </button>
+        </div>
+
+        <div class="action-buttons">
+          <!-- Segmented Like / Dislike pill -->
+          <div class="segmented-btn">
+            <button class="segment like-btn" [class.active]="isLiked()" (click)="toggleLike()">
+              <svg viewBox="0 0 24 24" class="btn-icon"><path fill="currentColor" d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
+              <span>{{ likeCount() | number }}</span>
+            </button>
+            <div class="divider"></div>
+            <button class="segment dislike-btn" title="I dislike this">
+              <svg viewBox="0 0 24 24" class="btn-icon"><path fill="currentColor" d="M15 3H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z"/></svg>
+            </button>
+          </div>
+
+          <button class="action-btn">
+            <svg viewBox="0 0 24 24" class="btn-icon"><path fill="currentColor" d="M14 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg>
+            <span>Share</span>
+          </button>
+
+          <button class="action-btn">
+            <svg viewBox="0 0 24 24" class="btn-icon"><path fill="currentColor" d="M17 18V2H7v16l5-3.08L17 18zM9 4h6v10.58l-3-1.85-3 1.85V4z"/></svg>
+            <span>Save</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Description Box -->
+      <div class="description-box">
+        <div class="desc-stats">
+          <span>{{ video.views }}</span>
+          <span>{{ video.uploadedAt }}</span>
+          @if (video.language) {
+            <span class="lang-tag">{{ video.language }}</span>
+          }
+        </div>
+        <p class="desc-text">{{ video.description }}</p>
+      </div>
+
+      <!-- Comments Section -->
+      <section class="comments-section">
+        <div class="comments-header">
+          <h3 class="comments-count">{{ comments().length }} Comments</h3>
+          <button class="sort-btn">
+            <svg viewBox="0 0 24 24" class="btn-icon"><path fill="currentColor" d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"/></svg>
+            <span>Sort by</span>
+          </button>
+        </div>
+
+        <div class="comment-input-box">
+          <div class="user-avatar-sm">M</div>
+          <div class="input-actions-wrapper">
+            <input 
+              #commentInput
+              type="text" 
+              placeholder="Add a comment..." 
+              (input)="onCommentInput($event)"
+              (keydown.enter)="addComment(commentInput)"
+            />
+            <div class="comment-btns">
+              <button class="cancel-btn" (click)="commentInput.value = ''">Cancel</button>
+              <button class="submit-btn" (click)="addComment(commentInput)">Comment</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="comments-list">
+          @for (comment of comments(); track comment.id) {
+            <div class="comment-item">
+              <img [src]="comment.avatar" [alt]="comment.user" class="comment-avatar" />
+              <div class="comment-body">
+                <div class="comment-user-row">
+                  <span class="user-handle">&#64;{{ comment.user }}</span>
+                  <span class="comment-date">{{ comment.timeAgo }}</span>
+                </div>
+                <p class="comment-text">{{ comment.text }}</p>
+                <div class="comment-actions">
+                  <button class="comment-action-btn">
+                    <svg viewBox="0 0 24 24" class="action-icon"><path fill="currentColor" d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
+                    <span>{{ comment.likes }}</span>
+                  </button>
+                  <button class="comment-action-btn">
+                    <svg viewBox="0 0 24 24" class="action-icon"><path fill="currentColor" d="M15 3H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z"/></svg>
+                  </button>
+                  <button class="reply-btn">Reply</button>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+    </div>
+
+    <!-- Suggested Recommendations -->
+    <aside class="suggested-sidebar">
+      @for (sugg of videoService.homeVideos(); track sugg.id) {
+        @if (sugg.id !== video.id) {
+          <div class="suggested-card" (click)="selectSuggestedVideo(sugg.id)">
+            <div class="sugg-thumbnail">
+              <img [src]="sugg.thumbnailUrl" [alt]="sugg.title" />
+              <span class="sugg-duration">{{ sugg.duration }}</span>
+            </div>
+            <div class="sugg-meta">
+              <h4 class="sugg-title" [title]="sugg.title">{{ sugg.title }}</h4>
+              <p class="sugg-channel">{{ sugg.channelName }}</p>
+              <p class="sugg-views">{{ sugg.views }} • {{ sugg.uploadedAt }}</p>
+            </div>
+          </div>
+        }
+      }
+    </aside>
+  </div>
+}
