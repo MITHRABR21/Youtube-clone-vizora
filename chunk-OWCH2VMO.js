@@ -1,0 +1,1 @@
+import{i,s as t}from"./chunk-RUR7WU37.js";var o=class e{isSidebarOpen=t(!0);toggleSidebar(){this.isSidebarOpen.update(a=>!a)}static \u0275fac=function(r){return new(r||e)};static \u0275prov=i({token:e,factory:e.\u0275fac,providedIn:"root"})};export{o as a};
